@@ -7,7 +7,7 @@ import { TicketData } from './types';
 const INITIAL_DATA: TicketData = {
   memberId: "12345",
   name: "Harry Feleke Mulalet",
-  avatarUrl: "https://picsum.photos/id/91/400/400",
+  avatarUrl: "https://picsum.photos/id/91/400/400", // Using a specific person-like image
   status: "CHECKED-IN",
   facilityName: "Bäderland Billebad Hamburg",
   facilityAddress: "Reetwerder 25, 21029 Hamburg",
@@ -20,6 +20,7 @@ const App: React.FC = () => {
 
   const handleBack = () => {
     console.log("Navigating back...");
+    // In a real app, this would use router history
   };
 
   const updateDate = (newDate: string) => {
@@ -34,21 +35,9 @@ const App: React.FC = () => {
 
   const updateAvatar = (file: File) => {
     if (!file) return;
+    // Create a local URL for the selected file
     const objectUrl = URL.createObjectURL(file);
     setTicketData(prev => ({ ...prev, avatarUrl: objectUrl }));
-  };
-
-  // --- New Handlers ---
-  const updateName = (name: string) => {
-    setTicketData(prev => ({ ...prev, name }));
-  };
-
-  const updateFacilityName = (facilityName: string) => {
-    setTicketData(prev => ({ ...prev, facilityName }));
-  };
-
-  const updateFacilityAddress = (facilityAddress: string) => {
-    setTicketData(prev => ({ ...prev, facilityAddress }));
   };
 
   return (
@@ -61,10 +50,6 @@ const App: React.FC = () => {
           onDateChange={updateDate}
           onTimeChange={updateTime}
           onAvatarChange={updateAvatar}
-          // Passing new handlers
-          onNameChange={updateName}
-          onFacilityNameChange={updateFacilityName}
-          onFacilityAddressChange={updateFacilityAddress}
         />
       </main>
     </div>
