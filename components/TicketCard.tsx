@@ -7,21 +7,9 @@ interface TicketCardProps {
   onDateChange: (newDate: string) => void;
   onTimeChange: (newTime: string) => void;
   onAvatarChange: (file: File) => void;
-  // New handlers
-  onNameChange: (newName: string) => void;
-  onFacilityNameChange: (newName: string) => void;
-  onFacilityAddressChange: (newAddress: string) => void;
 }
 
-const TicketCard: React.FC<TicketCardProps> = ({ 
-  data, 
-  onDateChange, 
-  onTimeChange, 
-  onAvatarChange,
-  onNameChange,
-  onFacilityNameChange,
-  onFacilityAddressChange
-}) => {
+const TicketCard: React.FC<TicketCardProps> = ({ data, onDateChange, onTimeChange, onAvatarChange }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAvatarClick = () => {
@@ -35,13 +23,13 @@ const TicketCard: React.FC<TicketCardProps> = ({
     }
   };
 
-  // Shared class for editable text inputs to make them look like text but behave like inputs
-  const inputBaseClass = "bg-transparent border-b border-transparent focus:border-white/30 outline-none w-full transition-colors placeholder-blue-100/50";
-
   return (
     <div className="relative w-full max-w-[360px] mx-auto mt-24">
       
-      {/* Visual Hack: Top Scoop Mask */}
+      {/* Visual Hack: Top Scoop Mask
+          Since we can't easily do a concave border-radius with standard CSS, 
+          we place a circle of the background color behind the avatar to "cut" into the card. 
+      */}
       <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-32 h-32 bg-slate-50 rounded-full z-10"></div>
 
       {/* Avatar */}
@@ -67,21 +55,16 @@ const TicketCard: React.FC<TicketCardProps> = ({
       </div>
 
       {/* Main Card Body */}
+      {/* Using a gradient that mimics the provided image: Lighter slate-teal top to deep dark blue bottom */}
       <div className="bg-gradient-to-b from-[#507d98] to-[#123652] rounded-3xl overflow-hidden shadow-2xl text-white pt-20 pb-10 px-6 relative z-0">
         
         {/* Top Section */}
         <div className="flex justify-between items-start mb-6">
-          <div className="flex flex-col w-full mr-4">
+          <div className="flex flex-col">
             <span className="text-xs font-medium text-blue-100/70 uppercase tracking-wide mb-1">Member</span>
-            {/* Editable Name */}
-            <input 
-              type="text"
-              value={data.name}
-              onChange={(e) => onNameChange(e.target.value)}
-              className={`${inputBaseClass} text-lg font-bold leading-tight text-white`}
-            />
+            <h2 className="text-lg font-bold leading-tight">{data.name}</h2>
           </div>
-          <div className="flex flex-col items-end shrink-0">
+          <div className="flex flex-col items-end">
             <span className="text-xs font-medium text-blue-100/70 uppercase tracking-wide mb-1">Status</span>
             <span className={`bg-[#2ebfa5] text-[#0f4d42] text-xs font-bold px-2 py-0.5 rounded shadow-sm ${data.status === 'CHECKED-IN' ? 'animate-status-blink' : ''}`}>
               {data.status}
@@ -95,13 +78,17 @@ const TicketCard: React.FC<TicketCardProps> = ({
           <div className="flex flex-col relative group">
             <label className="text-xs font-medium text-blue-100/70 uppercase tracking-wide mb-1">Date</label>
             <div className="relative">
+                {/* The visual text */}
                 <span className="text-xl font-bold">{formatDate(data.date)}</span>
+                {/* The invisible trigger input */}
                 <input 
                     type="date" 
                     value={data.date}
                     onChange={(e) => onDateChange(e.target.value)}
                     className="absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer"
                 />
+                {/* Edit hint indicator on hover */}
+                <div className="absolute -right-3 top-0 w-2 h-2 bg-white/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
           </div>
 
@@ -126,22 +113,8 @@ const TicketCard: React.FC<TicketCardProps> = ({
         {/* Facility Info */}
         <div className="flex flex-col">
           <span className="text-xs font-medium text-blue-100/70 uppercase tracking-wide mb-1">Facility</span>
-          
-          {/* Editable Facility Name */}
-          <input 
-            type="text"
-            value={data.facilityName}
-            onChange={(e) => onFacilityNameChange(e.target.value)}
-            className={`${inputBaseClass} text-lg font-bold mb-1 text-white`}
-          />
-          
-          {/* Editable Address */}
-          <input 
-            type="text"
-            value={data.facilityAddress}
-            onChange={(e) => onFacilityAddressChange(e.target.value)}
-            className={`${inputBaseClass} text-sm text-blue-100/80 font-normal`}
-          />
+          <h3 className="text-lg font-bold mb-1">{data.facilityName}</h3>
+          <p className="text-sm text-blue-100/80 font-normal">{data.facilityAddress}</p>
         </div>
 
       </div>
